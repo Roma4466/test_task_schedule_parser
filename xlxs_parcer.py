@@ -2,7 +2,7 @@ from datetime import datetime
 
 import pandas as pd
 
-from coordinates_getter import get_coordinates_by_name
+from coordinates_getter import get_day_coordinates
 import json
 
 
@@ -12,15 +12,21 @@ def datetime_serializer(obj):
     raise TypeError("Type not serializable")
 
 
-def analyze(df, faculty, specialty, year_of_study, started_year):
-    day_column = get_coordinates_by_name(df, "День")
-    time_column = get_coordinates_by_name(df, "Час")
-    disciple_column = get_coordinates_by_name(df, "Дисципліна, викладач")
-    group_column = get_coordinates_by_name(df, "Група")
-    week_column = get_coordinates_by_name(df, "Тижні")
-    room_column = get_coordinates_by_name(df, "Аудиторія") if get_coordinates_by_name(df, "Аудиторія") else \
-        get_coordinates_by_name(df, "Ауд.")
+def analyze(df):
+    day_column = get_day_coordinates(df, "День")[1]
+    time_column = get_day_coordinates(df, "Час")[1]
+    disciple_column = get_day_coordinates(df, "Дисципліна, викладач")[1]
+    group_column = get_day_coordinates(df, "Група")[1]
+    week_column = get_day_coordinates(df, "Тижні")[1]
+    room_column = get_day_coordinates(df, "Аудиторія")[1] if get_day_coordinates(df, "Аудиторія")[1] else \
+        get_day_coordinates(df, "Ауд.")[1]
 
+    faculty = df.iloc[5, 0]
+    specialty = df.iloc[6, 0].split("\"")[1]
+    year_of_study = int(df.iloc[6, 0].split(", ")[1][0])
+    started_year = int(df.iloc[7, 0].split("-")[0][-4:])
+
+    # Initialize the final data structure to hold the parsed information
     final_parsed_data = {
         faculty: {
             specialty: {},
@@ -31,10 +37,8 @@ def analyze(df, faculty, specialty, year_of_study, started_year):
     current_day = ""
     current_time = ""
 
-    column_of_day = get_coordinates_by_name(df, "День")
-
     for index, row in df.iterrows():
-        if index < column_of_day + 1:
+        if index < 10:
             continue
 
         if pd.notna(row[day_column]):
