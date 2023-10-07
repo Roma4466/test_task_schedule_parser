@@ -5,6 +5,8 @@ import pandas as pd
 from coordinates_getter import get_day_coordinates
 import json
 
+SPECIALITIES = "Спеціальності"
+
 
 def datetime_serializer(obj):
     if isinstance(obj, datetime):

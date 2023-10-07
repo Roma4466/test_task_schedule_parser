@@ -50,5 +50,4 @@ def read_faculty_and_specialties(document):
                             current_string += symbol
                         else:
                             current_string = ""
-    print(faculty, specialities, year_of_study, started_year - 1)
     return faculty, specialities, year_of_study, started_year - 1
