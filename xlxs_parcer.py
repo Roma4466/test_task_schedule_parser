@@ -33,7 +33,11 @@ def analyze(df):
     # Initialize the final data structure to hold the parsed information
     final_parsed_data = {
         faculty: {
-            specialty: {},
+            SPECIALITIES: {
+                specialty: {
+
+                }
+            },
             "Рік навчання": year_of_study,
             "Роки навчального року": [started_year, started_year + 1],
         }
@@ -74,12 +78,12 @@ def analyze(df):
 
         # now we know faculty, specialty, discipline
         # then let`s initialize field in result file
-        if discipline not in final_parsed_data[faculty][specialty]:
-            final_parsed_data[faculty][specialty][discipline] = {
+        if discipline not in final_parsed_data[faculty][SPECIALITIES][specialty]:
+            final_parsed_data[faculty][SPECIALITIES][specialty][discipline] = {
             }
 
-        if group not in final_parsed_data[faculty][specialty][discipline]:
-            final_parsed_data[faculty][specialty][discipline][group] = {}
+        if group not in final_parsed_data[faculty][SPECIALITIES][specialty][discipline]:
+            final_parsed_data[faculty][SPECIALITIES][specialty][discipline][group] = {}
 
         start_time_str, end_time_str = current_time.split('-')
 
@@ -87,7 +91,7 @@ def analyze(df):
         start_time = datetime.combine(today, datetime.strptime(start_time_str, '%H:%M').time())
         end_time = datetime.combine(today, datetime.strptime(end_time_str, '%H:%M').time())
 
-        final_parsed_data[faculty][specialty][discipline][group] = {
+        final_parsed_data[faculty][SPECIALITIES][specialty][discipline][group] = {
             "час початку": start_time,
             "час кінця": end_time,
             "тижні": week,

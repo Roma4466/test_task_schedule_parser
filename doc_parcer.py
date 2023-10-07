@@ -1,42 +1,21 @@
-from docx import Document
-from datetime import datetime
-
-import pandas as pd
-
-import json
-
 from read_doc import read_faculty_and_specialties
 from time_parcer import parce_time
 from xlxs_parcer import analyze, datetime_serializer
 
+from docx import Document
+import json
+
+# in this file i was trying to handle schedule from .docx file
+# but unfortunately, table is movind aside as I move down
+# so i decided to convert docx to xlsx and handle that file
+
 SPECIALITIES = "Спеціальності"
 
 # Load the document
-doc_path = 'data/3.docx'
+doc_path = 'data/3.docx'  # Replace this with your document path
 document = Document(doc_path)
 
-(faculty, specialities, year_of_study, started_year) = read_faculty_and_specialties(document)
-
-table = document.tables[0]
-data = []
-
-for row in table.rows:
-    row_data = []
-    for cell in row.cells:
-        row_data.append(cell.text.strip())
-    data.append(row_data)
-
-df = pd.DataFrame(data)
-
-df.columns = df.iloc[0]
-df = df.drop(df.index[0])
-
-day_column = -1
-time_column = 0
-disciple_column = 1
-group_column = 3
-week_column = 6
-room_column = 7
+faculty, specialities, year_of_study, started_year = read_faculty_and_specialties(document)
 
 final_parsed_data = {
     faculty: {
@@ -51,25 +30,38 @@ for speciality in specialities:
 
 current_day = ""
 current_time = ""
-for index, row in df.iterrows():
-    if pd.notna(row.iloc[day_column]):
-        current_day = row.iloc[day_column]
-    current_time = row.iloc[time_column] if pd.notna(row.iloc[time_column]) else current_time
-    discipline_info = row.iloc[disciple_column] if pd.notna(row.iloc[disciple_column]) else ""
+
+day_column = -1
+time_column = 0
+disciple_column = 1
+group_column = 3
+week_column = 6
+room_column = 7
+
+# Skipping header row by starting from index 1
+for row in document.tables[0].rows[1:]:
+    cells = [cell.text.strip() for cell in row.cells]
+
+    if cells[day_column]:
+        current_day = cells[day_column]
+    current_time = cells[time_column] if cells[time_column] else current_time
+    discipline_info = cells[disciple_column] if cells[disciple_column] else ""
+
     if not discipline_info:
         continue
+
     discipline = discipline_info.split("(")[0]
     teacher = discipline_info.split(")")[1]
-
-    # after this line from
-    # "Навчально-науковий семінар з економіки (екон.) проф. Бураковський І.В."
-    # will be
-    # "екон"
     speciality_abbreviation = discipline_info.split(")")[0].split("(")[1][:-1]
+    group = cells[group_column] if cells[group_column] else ""
+    week = cells[week_column] if cells[week_column] else ""
+    room = cells[room_column] if cells[room_column] else ""
 
-    group = row.iloc[group_column] if pd.notna(row.iloc[group_column]) else ""
-    week = row.iloc[week_column] if pd.notna(row.iloc[week_column]) else ""
-    room = row.iloc[room_column] if pd.notna(row.iloc[room_column]) else ""
+    speciality = ""
+    for speciality_from_docx in specialities:
+        if speciality_from_docx.lower().startswith(speciality_abbreviation):
+            speciality = speciality_from_docx
+            break
 
     print(f"day of week: {current_day}",
           f"time: {current_time}",
@@ -78,16 +70,8 @@ for index, row in df.iterrows():
           f"week: {week}",
           f"room: {room}")
 
-    # here can be several specialities so we have to understand which is it
-    speciality = ""
-    for speciality_from_docx in specialities:
-        speciality_lowered = speciality_from_docx.lower()
-        if speciality_lowered[:len(speciality_abbreviation)] == speciality_abbreviation:
-            speciality = speciality_from_docx
-
     if discipline not in final_parsed_data[faculty][SPECIALITIES][speciality]:
-        final_parsed_data[faculty][SPECIALITIES][speciality][discipline] = {
-        }
+        final_parsed_data[faculty][SPECIALITIES][speciality][discipline] = {}
     if group not in final_parsed_data[faculty][SPECIALITIES][speciality][discipline]:
         final_parsed_data[faculty][SPECIALITIES][speciality][discipline][group] = {}
 
@@ -103,6 +87,8 @@ for index, row in df.iterrows():
         "день тижня": current_day,
         "викладач": teacher
     }
+
+# Output final data
 print(final_parsed_data)
 json_str = json.dumps(final_parsed_data, indent=4, default=datetime_serializer, ensure_ascii=False)
 with open('output/final_parsed_data.json', 'w') as f:
