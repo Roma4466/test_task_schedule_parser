@@ -37,8 +37,10 @@ def analyze(df):
     current_day = ""
     current_time = ""
 
+    coordinates = get_day_coordinates(df, "День")[0]
+
     for index, row in df.iterrows():
-        if index < 10:
+        if index < coordinates + 1:
             continue
 
         if pd.notna(row[day_column]):
