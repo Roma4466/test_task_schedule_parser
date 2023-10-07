@@ -1,11 +1,6 @@
-def get_day_coordinates(df, name):
-    coordinates = None
-
+def get_day_coordinates(df, names):
     for row in df.iterrows():
         index, data = row
         for col in range(len(data)):
-            if data[col] == name:
-                coordinates = (index, col)
-                break
-        if coordinates:
-            return coordinates
+            if str(data[col]) in names:
+                return index, col

@@ -1,4 +1,4 @@
-from read_doc import read_faculty_and_specialties
+from read_specialities import read_faculty_and_specialties
 from time_parcer import parce_time
 from xlxs_parcer import analyze, datetime_serializer
 
