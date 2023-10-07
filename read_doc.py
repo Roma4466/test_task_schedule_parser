@@ -23,7 +23,8 @@ def read_faculty_and_specialties(document):
                             if speciality[0] == " ":
                                 speciality = speciality[1:]
                             if len(speciality) > 3 and speciality[0] == '«':
-                                specialities.append(speciality[1:])
+                                speciality = speciality[1:].replace("»", "")
+                                specialities.append(speciality)
                     for symbol in run.text:
                         if symbol.isdigit():
                             year_of_study = int(symbol)

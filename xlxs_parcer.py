@@ -13,6 +13,7 @@ def datetime_serializer(obj):
 
 
 def analyze(df):
+    # getting column number
     day_column = get_day_coordinates(df, "День")[1]
     time_column = get_day_coordinates(df, "Час")[1]
     disciple_column = get_day_coordinates(df, "Дисципліна, викладач")[1]
@@ -21,6 +22,7 @@ def analyze(df):
     room_column = get_day_coordinates(df, "Аудиторія")[1] if get_day_coordinates(df, "Аудиторія")[1] else \
         get_day_coordinates(df, "Ауд.")[1]
 
+    # getting names of faculty, speciality etc.
     faculty = df.iloc[5, 0]
     specialty = df.iloc[6, 0].split("\"")[1]
     year_of_study = int(df.iloc[6, 0].split(", ")[1][0])
@@ -35,11 +37,18 @@ def analyze(df):
         }
     }
     current_day = ""
+    # because of if there is time in 2 cels
+    # python reads it like it is only in one cell
+    # so I have save last time
     current_time = ""
 
+    # getting row number where schedule starts
     coordinates = get_day_coordinates(df, "День")[0]
 
     for index, row in df.iterrows():
+        # before coordinates row there is basic
+        # info about faculty etc.
+        # there is no schedule there so I skip it
         if index < coordinates + 1:
             continue
 
@@ -49,6 +58,8 @@ def analyze(df):
 
         discipline_info = row[disciple_column] if pd.notna(row[disciple_column]) else ""
 
+        # if this cell is empty then
+        # there is no need to read further
         if not discipline_info:
             continue
 
@@ -59,6 +70,8 @@ def analyze(df):
         week = row[week_column] if pd.notna(row[week_column]) else ""
         room = row[room_column] if pd.notna(row[room_column]) else ""
 
+        # now we know faculty, specialty, discipline
+        # then let`s initialize field in result file
         if discipline not in final_parsed_data[faculty][specialty]:
             final_parsed_data[faculty][specialty][discipline] = {
             }
