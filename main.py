@@ -3,8 +3,7 @@ import pandas as pd
 from xlxs_parcer import analyze
 
 print("Drag your file into data folder in root directory of this project")
-# name = str(input("Write file name without extension, for example: fen:\n"))
-name = "kn-1"
+name = str(input("Write file name without extension, for example: fen:\n"))
 
 file_path = f'data/{name}.xlsx'
 df = pd.read_excel(file_path, header=None)

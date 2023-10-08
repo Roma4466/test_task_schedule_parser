@@ -2,6 +2,8 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/final_parsed_data.json" charset="windows-1251" />
+    <file url="file://$PROJECT_DIR$/output/avis-1.json" charset="windows-1251" />
+    <file url="file://$PROJECT_DIR$/output/fen-4.json" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/output/fen.json" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/output/final_parsed_data.json" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/output/ipz-1.json" charset="windows-1251" />
