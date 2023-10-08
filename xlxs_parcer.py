@@ -2,16 +2,16 @@ import json
 
 import pandas as pd
 
+import time_parcer
 from coordinates_getter import get_coordinates_of_column
 from read_specialities import read_faculty_and_specialties
 from speciality_extractor import extract_speciality_from_abbreviation
 from str_formatting import remove_spaces_from_start_and_end
-from time_parcer import datetime_serializer
 
 SPECIALITIES_FIELD_NAME = "Спеціальності"
 
 
-def analyze(df):
+def analyze(df, name):
     is_several_specialities = False
 
     # getting column number
@@ -63,7 +63,7 @@ def analyze(df):
 
         group = row[group_column] if pd.notna(row[group_column]) else group
         week = row[week_column] if pd.notna(row[week_column]) else week
-        week = format_datetime_for_json(week)
+        week = time_parcer.format_datetime_for_json(week)
         room = row[room_column] if pd.notna(row[room_column]) else room
         # if this cell is empty then
         # there is no need to read further
@@ -125,7 +125,7 @@ def analyze(df):
                 "викладач": teacher
             }
 
-    json_str = json.dumps(final_parsed_data, indent=4, default=datetime_serializer, ensure_ascii=False)
+    json_str = json.dumps(final_parsed_data, indent=4, default=time_parcer.datetime_serializer, ensure_ascii=False)
 
-    with open('output/final_parsed_data.json', 'w') as f:
+    with open(f'output/{name}.json', 'w') as f:
         f.write(json_str)
