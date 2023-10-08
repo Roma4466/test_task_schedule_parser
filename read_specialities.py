@@ -46,5 +46,4 @@ def read_faculty_and_specialties(df):
                     specialities.append(speciality)
                 is_read_specialities = False
 
-    print(faculty, specialities, year_of_study, started_year)
     return faculty, specialities, year_of_study, started_year - 1

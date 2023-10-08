@@ -9,8 +9,8 @@ def remove_non_letters(input_str):
 
 
 def remove_spaces_from_start_and_end(input_str):
-    while input_str[0] == " ":
+    while len(input_str) > 1 and input_str[0] == " ":
         input_str = input_str[1:]
-    while input_str[-1] == " ":
+    while len(input_str) > 1 and input_str[-1] == " ":
         input_str = input_str[:-1]
     return input_str
