@@ -1,12 +1,12 @@
+import json
+
 import pandas as pd
 
 from coordinates_getter import get_coordinates_of_column
-import json
-
-from datetime_parcer import format_datetime_for_json
 from read_specialities import read_faculty_and_specialties
 from speciality_extractor import extract_speciality_from_abbreviation
 from str_formatting import remove_spaces_from_start_and_end
+from time_parcer import datetime_serializer
 
 SPECIALITIES_FIELD_NAME = "Спеціальності"
 
