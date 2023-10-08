@@ -1,53 +1,50 @@
+from str_formatting import remove_non_letters
+
 SPECIALITY_FIELD_NAME = 'Спеціальність'
 FACULTY_FIELD_NAME = 'Факультет'
 
 
-def read_faculty_and_specialties(document):
+def read_faculty_and_specialties(df):
     faculty = ""
     specialities = []
     year_of_study = 0
     started_year = 0
     is_read_specialities = False
+    is_read_faculty = False
     digits = ""
 
-    current_string = ""
-    for para in document.paragraphs:
-        for run in para.runs:
-            if run.bold:
-                if run.text[:9] == FACULTY_FIELD_NAME:
-                    faculty = run.text
-                elif is_read_specialities:
-                    split = run.text.split("»,")
-                    for speciality in split:
-                        if len(speciality) > 3:
-                            if speciality[0] == " ":
-                                speciality = speciality[1:]
-                            if len(speciality) > 3 and speciality[0] == '«':
-                                speciality = speciality[1:].replace("»", "")
-                                specialities.append(speciality)
-                    for symbol in run.text:
-                        if symbol.isdigit():
-                            year_of_study = int(symbol)
-                            is_read_specialities = False
-            else:
-                for symbol in run.text:
-                    if symbol.isdigit():
-                        digits += symbol
-                    else:
-                        if len(digits) == 4:
-                            started_year = int(digits)
-                        digits = ""
+    # Loop through each row in the DataFrame
+    for index, row in df.iterrows():
+        for col_index in range(min(7, df.shape[1])):
+            text = str(row.iloc[col_index])
+            current_string = ""
+            for symbol in text:
+                if symbol.isdigit():
+                    digits += symbol
+                else:
+                    if len(digits) == 4:
+                        started_year = int(digits)
+                    digits = ""
 
-                    if current_string == SPECIALITY_FIELD_NAME:
-                        current_string = ""
-                        is_read_specialities = True
-                    else:
-                        if (len(SPECIALITY_FIELD_NAME) > len(current_string)
-                                and symbol == SPECIALITY_FIELD_NAME[len(current_string)]):
-                            current_string += symbol
-                        elif (len(FACULTY_FIELD_NAME) > len(current_string)
-                              and symbol == FACULTY_FIELD_NAME[len(current_string)]):
-                            current_string += symbol
-                        else:
-                            current_string = ""
+                if current_string == SPECIALITY_FIELD_NAME:
+                    current_string = ""
+                    is_read_specialities = True
+                elif current_string == FACULTY_FIELD_NAME:
+                    is_read_faculty = True
+                current_string += symbol
+
+            if is_read_faculty:
+                faculty = current_string
+                is_read_faculty = False
+            if is_read_specialities:
+                for i in current_string:
+                    if i.isdigit():
+                        year_of_study = int(i)
+                specialities_tmp = current_string.split("», ")
+                for speciality in specialities_tmp:
+                    speciality = remove_non_letters(speciality)
+                    specialities.append(speciality)
+                is_read_specialities = False
+
+    print(faculty, specialities, year_of_study, started_year)
     return faculty, specialities, year_of_study, started_year - 1
