@@ -104,8 +104,8 @@ def analyze(df, name):
                     "викладач": teacher
                 }
         else:
-            discipline = discipline_info.split(", ")[0]
-            teacher = discipline_info.split(", ")[1]
+            discipline = remove_spaces_from_start_and_end(discipline_info.split(", ")[0])
+            teacher = remove_spaces_from_start_and_end(discipline_info.split(", ")[1]) if len(discipline_info.split(", ")) > 1 else "???"
             # now we know faculty, specialty, discipline
             # then let`s initialize field in result file
             if discipline not in final_parsed_data[faculty][SPECIALITIES_FIELD_NAME][specialities[0]]:

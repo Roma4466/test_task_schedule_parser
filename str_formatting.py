@@ -4,7 +4,7 @@
 # 'Інженерія програмного забезпечення'
 def remove_non_letters(input_str):
     input_str = input_str.replace("р.н.", "")
-    input_str = ''.join(c for c in input_str if c.isalpha() or c == ' ')
+    input_str = ''.join(c for c in input_str if c.isalpha() or c == ' ' or c == "`")
     return remove_spaces_from_start_and_end(input_str)
 
 
