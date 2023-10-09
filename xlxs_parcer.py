@@ -1,6 +1,7 @@
 import json
 
 import pandas as pd
+import os
 
 import time_parcer
 from coordinates_getter import get_coordinates_of_column
@@ -113,7 +114,8 @@ def analyze(df, name):
                 }
         else:
             discipline = remove_spaces_from_start_and_end(discipline_info.split(", ")[0])
-            teacher = remove_spaces_from_start_and_end(discipline_info.split(", ")[1]) if len(discipline_info.split(", ")) > 1 else "???"
+            teacher = remove_spaces_from_start_and_end(discipline_info.split(", ")[1]) if len(
+                discipline_info.split(", ")) > 1 else "???"
             # now we know faculty, specialty, discipline
             # then let`s initialize field in result file
             if discipline not in final_parsed_data[faculty][SPECIALITIES_FIELD_NAME][specialities[0]]:
@@ -134,6 +136,12 @@ def analyze(df, name):
             }
 
     json_str = json.dumps(final_parsed_data, indent=4, default=time_parcer.datetime_serializer, ensure_ascii=False)
+    # Define the directory path
+    output_dir = 'output'
+
+    # Check if the directory exists, and if not, create it
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
 
     with open(f'output/{name}.json', 'w') as f:
         f.write(json_str)
