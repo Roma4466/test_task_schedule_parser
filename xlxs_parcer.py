@@ -9,6 +9,7 @@ from speciality_extractor import extract_speciality_from_abbreviation
 from str_formatting import remove_spaces_from_start_and_end
 
 SPECIALITIES_FIELD_NAME = "Спеціальності"
+LECTION_FIELD_NAME = "лекція"
 
 
 def analyze(df, name):
@@ -61,7 +62,14 @@ def analyze(df, name):
         current_time = row[time_column] if pd.notna(row[time_column]) else current_time
         discipline_info = row[disciple_column] if pd.notna(row[disciple_column]) else ""
 
-        group = row[group_column] if pd.notna(row[group_column]) else group
+        group = str(row[group_column] if pd.notna(row[group_column]) else group)
+        if LECTION_FIELD_NAME.lower() in group.lower():
+            group = LECTION_FIELD_NAME
+        else:
+            for i in group:
+                if i.isdigit():
+                    group = int(i)
+                    break
         week = row[week_column] if pd.notna(row[week_column]) else week
         week = time_parcer.format_datetime_for_json(week)
         room = row[room_column] if pd.notna(row[room_column]) else room
