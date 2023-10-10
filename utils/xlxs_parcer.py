@@ -1,6 +1,7 @@
 import json
 
 import pandas as pd
+import os
 
 from utils import time_parcer
 from utils.coordinates_getter import get_coordinates_of_column
@@ -9,6 +10,7 @@ from utils.speciality_extractor import extract_speciality_from_abbreviation
 from utils.str_formatting import remove_spaces_from_start_and_end
 
 SPECIALITIES_FIELD_NAME = "Спеціальності"
+LECTION_FIELD_NAME = "лекція"
 
 
 def analyze(df, name):
@@ -61,7 +63,14 @@ def analyze(df, name):
         current_time = row[time_column] if pd.notna(row[time_column]) else current_time
         discipline_info = row[disciple_column] if pd.notna(row[disciple_column]) else ""
 
-        group = row[group_column] if pd.notna(row[group_column]) else group
+        group = str(row[group_column] if pd.notna(row[group_column]) else group)
+        if LECTION_FIELD_NAME.lower() in group.lower():
+            group = LECTION_FIELD_NAME
+        else:
+            for i in group:
+                if i.isdigit():
+                    group = int(i)
+                    break
         week = row[week_column] if pd.notna(row[week_column]) else week
         week = time_parcer.format_datetime_for_json(week)
         room = row[room_column] if pd.notna(row[room_column]) else room
@@ -105,7 +114,8 @@ def analyze(df, name):
                 }
         else:
             discipline = remove_spaces_from_start_and_end(discipline_info.split(", ")[0])
-            teacher = remove_spaces_from_start_and_end(discipline_info.split(", ")[1]) if len(discipline_info.split(", ")) > 1 else "???"
+            teacher = remove_spaces_from_start_and_end(discipline_info.split(", ")[1]) if len(
+                discipline_info.split(", ")) > 1 else "???"
             # now we know faculty, specialty, discipline
             # then let`s initialize field in result file
             if discipline not in final_parsed_data[faculty][SPECIALITIES_FIELD_NAME][specialities[0]]:
@@ -126,6 +136,12 @@ def analyze(df, name):
             }
 
     json_str = json.dumps(final_parsed_data, indent=4, default=time_parcer.datetime_serializer, ensure_ascii=False)
+    # Define the directory path
+    output_dir = 'output'
+
+    # Check if the directory exists, and if not, create it
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
 
     with open(f'output/{name}.json', 'w') as f:
         f.write(json_str)
