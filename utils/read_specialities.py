@@ -1,4 +1,4 @@
-from str_formatting import remove_non_letters
+from utils.str_formatting import remove_non_letters
 
 SPECIALITY_FIELD_NAME = 'Спеціальність'
 FACULTY_FIELD_NAME = 'Факультет'

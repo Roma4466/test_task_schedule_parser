@@ -2,11 +2,11 @@ import json
 
 import pandas as pd
 
-import time_parcer
-from coordinates_getter import get_coordinates_of_column
-from read_specialities import read_faculty_and_specialties
-from speciality_extractor import extract_speciality_from_abbreviation
-from str_formatting import remove_spaces_from_start_and_end
+from utils import time_parcer
+from utils.coordinates_getter import get_coordinates_of_column
+from utils.read_specialities import read_faculty_and_specialties
+from utils.speciality_extractor import extract_speciality_from_abbreviation
+from utils.str_formatting import remove_spaces_from_start_and_end
 
 SPECIALITIES_FIELD_NAME = "Спеціальності"
 

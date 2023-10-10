@@ -1,6 +1,6 @@
 import pandas as pd
 
-from xlxs_parcer import analyze
+from utils.xlxs_parcer import analyze
 
 print("Drag your file into data folder in root directory of this project")
 name = str(input("Write file name without extension, for example: fen:\n"))
