@@ -46,16 +46,18 @@ class SingleMajorSchedule(Schedule):
                 "Роки навчального року": [self._years[0], self._years[1]],
             }
         }
-        for current_specialities in self.majors:
-            final_parsed_data[self._faculty_name][SPECIALITIES_FIELD_NAME][current_specialities] = {}
+        for major in self.majors:
+            final_parsed_data[self._faculty_name][SPECIALITIES_FIELD_NAME][major] = {}
         # because of if there is time in 2 cels
-        # python reads it like it is only in one cell
+        # python reads it like it is only in one cell,
         # so I have save last time
         current_time = ""
         current_day = ""
+        previous_disciple = ""
         group = ""
         room = ""
         week = ""
+        major = ""
 
         # getting row number where schedule starts
         coordinates = get_coordinates_of_column(self.schedule_data_frame, "День")[0]
@@ -63,7 +65,7 @@ class SingleMajorSchedule(Schedule):
         for index, row in self.schedule_data_frame.iterrows():
             # before coordinates row there is basic
             # info about faculty etc.
-            # there is no schedule there so I skip it
+            # there is no schedule there, so I skip it
             if index < coordinates + 1:
                 continue
 

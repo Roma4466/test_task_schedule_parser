@@ -49,7 +49,7 @@ class SeveralMajorsSchedule(Schedule):
         for major in self.majors:
             final_parsed_data[self._faculty_name][SPECIALITIES_FIELD_NAME][major] = {}
         # because of if there is time in 2 cels
-        # python reads it like it is only in one cell
+        # python reads it like it is only in one cell,
         # so I have save last time
         current_time = ""
         current_day = ""
@@ -65,7 +65,7 @@ class SeveralMajorsSchedule(Schedule):
         for index, row in self.schedule_data_frame.iterrows():
             # before coordinates row there is basic
             # info about faculty etc.
-            # there is no schedule there so I skip it
+            # there is no schedule there, so I skip it
             if index < coordinates + 1:
                 continue
 
