@@ -3,10 +3,12 @@ import os
 from datetime import datetime
 
 import pandas as pd
+from pandas import DataFrame
 
 from utils.coordinates_getter import get_coordinates_of_column
 from utils.formatting import time_parcer
 from utils.formatting.str_formatting import StringFormatter
+from utils.formatting.time_parcer import TimeFormatter
 from utils.read_specialities import read_faculty_and_specialties
 from utils.speciality_extractor import extract_speciality_from_abbreviation
 
@@ -16,7 +18,7 @@ LECTION_FIELD_NAME = "лекція"
 
 class ScheduleParser:
     @staticmethod
-    def parse_schedule(schedule_data_frame, name):
+    def parse_schedule(schedule_data_frame: DataFrame, name: str):
         """function that will parse schedule from .xlsx format into .json file"""
         is_several_specialities = False
 
@@ -76,7 +78,7 @@ class ScheduleParser:
                         group = int(i)
                         break
             week = row[week_column] if pd.notna(row[week_column]) else week
-            week = time_parcer.format_datetime_for_json(week)
+            week = TimeFormatter.format_datetime_for_json(week)
             room = row[room_column] if pd.notna(row[room_column]) else room
             # if this cell is empty then
             # there is no need to read further
@@ -139,7 +141,7 @@ class ScheduleParser:
                     "викладач": teacher
                 }
 
-        json_str = json.dumps(final_parsed_data, indent=4, default=time_parcer.datetime_serializer, ensure_ascii=False)
+        json_str = json.dumps(final_parsed_data, indent=4, default=datetime_serializer, ensure_ascii=False)
         # Define the directory path
         output_dir = 'output'
 

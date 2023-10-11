@@ -1,7 +1,5 @@
+from utils.constants import SPECIALITY_FIELD_NAME, FACULTY_FIELD_NAME
 from utils.formatting.str_formatting import StringFormatter
-
-SPECIALITY_FIELD_NAME = 'Спеціальність'
-FACULTY_FIELD_NAME = 'Факультет'
 
 
 def read_faculty_and_specialties(df):
