@@ -19,3 +19,20 @@ class StringFormatter:
         while len(input_str) > 0 and input_str[-1] == " ":
             input_str = input_str[:-1]
         return input_str
+
+    @staticmethod
+    def remove_everything_after_last_digit(input_str: str) -> str:
+        """
+        Removes all characters after the last digit in the string.
+        :param input_str: f.e '24f46hello'
+        :return: f.e '24f46'
+        """
+        last_digit_index = None
+        for i, char in enumerate(reversed(input_str)):
+            if char.isdigit():
+                last_digit_index = len(input_str) - i - 1
+                break
+        if last_digit_index is not None:
+            return input_str[:last_digit_index + 1]
+        else:
+            return ''

@@ -78,10 +78,7 @@ class SeveralMajorsSchedule(Schedule):
             if LECTION_FIELD_NAME.lower() in group.lower():
                 group = LECTION_FIELD_NAME
             else:
-                for i in group:
-                    if i.isdigit():
-                        group = int(i)
-                        break
+                group = StringFormatter.remove_everything_after_last_digit(group)
             week = row[self.week_column] if pd.notna(row[self.week_column]) else week
             week = TimeFormatter.format_datetime_for_json(week)
             room = row[self.room_column] if pd.notna(row[self.room_column]) else room

@@ -5,6 +5,7 @@ from datetime import datetime
 from pandas import DataFrame
 
 from utils.constants import SPECIALITY_FIELD_NAME, FACULTY_FIELD_NAME
+from utils.datetime_serializer import datetime_serializer
 from utils.formatting.str_formatting import StringFormatter
 from utils.models.several_majors_schedule import SeveralMajorsSchedule
 from utils.models.single_major_schedule import SingleMajorSchedule
@@ -79,8 +80,3 @@ class ScheduleParser:
         return SingleMajorSchedule(faculty, year_of_study, [started_year, started_year + 1], majors,
                                    schedule_data_frame)
 
-
-def datetime_serializer(obj):
-    if isinstance(obj, datetime):
-        return obj.strftime('%H:%M')
-    raise TypeError("Type not serializable")
