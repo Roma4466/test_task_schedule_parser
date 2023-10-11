@@ -2,9 +2,7 @@ from abc import ABC, abstractmethod
 
 from pandas import DataFrame
 
-from utils.constants import SPECIALITIES_FIELD_NAME
 from utils.coordinates_getter import get_coordinates_of_column
-from utils.formatting.str_formatting import StringFormatter
 
 
 class Schedule(ABC):

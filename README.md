@@ -2,16 +2,18 @@
 
 ## Description
 
-This project aims to unify the schedules of different faculties at NaUKMA by creating a parser. The parser will read the schedules from `.xlsx` files and convert them into a standardized JSON format.
+This project aims to unify the schedules of different faculties at NaUKMA by creating a parser. The parser will read the
+schedules from `.xlsx` files and convert them into a standardized JSON format.
 
 ## Problem Statement
 
-There is no unified standard for schedules at NaUKMA. This parser aims to solve that problem by providing a readable data structure for schedules.
+There is no unified standard for schedules at NaUKMA. This parser aims to solve that problem by providing a readable
+data structure for schedules.
 
 ## Installation
 
 1. Clone this repository
-git clone https://github.com/Roma4466/test_task_schedule_parser.git
+   git clone https://github.com/Roma4466/test_task_schedule_parser.git
 2. Install the required packages
 
 ## Usage
@@ -100,10 +102,12 @@ If you are using PyCharm, just click on "Reload in 'windows-1251'"
 ```
 
 ## Technologies Used
+
 + Python
 + Pandas
 + JSON
 
 ## Examples
 
-You can find several examples of .xlsx files in data folder, to check them just run main.py and type file from its folder name into console 
+You can find several examples of .xlsx files in data folder, to check them just run main.py and type file from its
+folder name into console 

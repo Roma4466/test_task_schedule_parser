@@ -1,3 +1,4 @@
+import re
 from typing import List
 
 import pandas as pd
@@ -8,7 +9,6 @@ from utils.coordinates_getter import get_coordinates_of_column
 from utils.formatting.str_formatting import StringFormatter
 from utils.formatting.time_parcer import TimeFormatter
 from utils.models.schedule import Schedule
-from utils.speciality_extractor import extract_speciality_from_abbreviation
 
 
 class SeveralMajorsSchedule(Schedule):
@@ -101,7 +101,7 @@ class SeveralMajorsSchedule(Schedule):
                 teacher = StringFormatter.remove_spaces_from_start_and_end(discipline_info.split(")")[1])
                 if not teacher.replace(" ", ""):
                     continue
-                major = extract_speciality_from_abbreviation(discipline_info, self._majors)
+                major = SeveralMajorsSchedule.extract_speciality_from_abbreviation(discipline_info, self._majors)
 
             for speciality in major:
                 if discipline not in final_parsed_data[self._faculty_name][SPECIALITIES_FIELD_NAME][speciality]:
@@ -122,3 +122,19 @@ class SeveralMajorsSchedule(Schedule):
                     "викладач": teacher
                 }
         return final_parsed_data
+
+    @staticmethod
+    def extract_speciality_from_abbreviation(str_input: str, majors: List[str]):
+        result = set()
+        before_and_after_opening_parenthesis = str_input.split("(")
+        filtered_list = [i for i in before_and_after_opening_parenthesis if ")" in i]
+        for string in filtered_list:
+            split = string.split(")")[0]
+            # split by "," or "+"
+            split = re.split(r'[,+]', split)
+            for abbreviation in split:
+                without_non_letters = abbreviation.replace(")", "").replace(".", "").replace(" ", "")
+                for speciality in majors:
+                    if without_non_letters in speciality.lower():
+                        result.add(speciality)
+        return result
