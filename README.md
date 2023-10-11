@@ -20,8 +20,7 @@ data structure for schedules.
 
 1. Run `pip install -r requirements.txt`
 2. Drag your file into `data` folder in root directory of this project (for example, fen.xlsx)
-3. Run `python main.py`
-4. Write file name without extension, for example: fen
+3. Run `python main.py your_file_name_without_extension`
 
 ## Output
 
