@@ -1,13 +1,14 @@
 import json
+import os
+from datetime import datetime
 
 import pandas as pd
-import os
 
-from utils.formatting import time_parcer
 from utils.coordinates_getter import get_coordinates_of_column
+from utils.formatting import time_parcer
+from utils.formatting.str_formatting import StringFormatter
 from utils.read_specialities import read_faculty_and_specialties
 from utils.speciality_extractor import extract_speciality_from_abbreviation
-from utils.formatting.str_formatting import remove_spaces_from_start_and_end
 
 SPECIALITIES_FIELD_NAME = "Спеціальності"
 LECTION_FIELD_NAME = "лекція"
@@ -86,12 +87,12 @@ class ScheduleParser:
                 if len(discipline_info.split(")")) < 2:
                     # sometimes it parses disciple info in 2 cells
                     # in first disciple in second teacher name
-                    teacher = remove_spaces_from_start_and_end(discipline_info)
-                    discipline = remove_spaces_from_start_and_end(previous_disciple)
+                    teacher = StringFormatter.remove_spaces_from_start_and_end(discipline_info)
+                    discipline = StringFormatter.remove_spaces_from_start_and_end(previous_disciple)
                 else:
-                    discipline = remove_spaces_from_start_and_end(discipline_info.split("(")[0])
+                    discipline = StringFormatter.remove_spaces_from_start_and_end(discipline_info.split("(")[0])
                     previous_disciple = discipline
-                    teacher = remove_spaces_from_start_and_end(discipline_info.split(")")[1])
+                    teacher = StringFormatter.remove_spaces_from_start_and_end(discipline_info.split(")")[1])
                     if not teacher.replace(" ", ""):
                         continue
                     current_specialities = extract_speciality_from_abbreviation(discipline_info, specialities)
@@ -116,8 +117,8 @@ class ScheduleParser:
                         "викладач": teacher
                     }
             else:
-                discipline = remove_spaces_from_start_and_end(discipline_info.split(", ")[0])
-                teacher = remove_spaces_from_start_and_end(discipline_info.split(", ")[1]) if len(
+                discipline = StringFormatter.remove_spaces_from_start_and_end(discipline_info.split(", ")[0])
+                teacher = StringFormatter.remove_spaces_from_start_and_end(discipline_info.split(", ")[1]) if len(
                     discipline_info.split(", ")) > 1 else "???"
                 # now we know faculty, specialty, discipline
                 # then let`s initialize field in result file
@@ -148,3 +149,9 @@ class ScheduleParser:
 
         with open(f'output/{name}.json', 'w') as f:
             f.write(json_str)
+
+
+def datetime_serializer(obj):
+    if isinstance(obj, datetime):
+        return obj.strftime('%H:%M')
+    raise TypeError("Type not serializable")

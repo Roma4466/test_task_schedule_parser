@@ -2,7 +2,7 @@ class StringFormatter:
     @staticmethod
     def remove_non_letters(input_str: str) -> str:
         """
-        Remove all numbers, special symbols from string and return plain text with spaces
+        Removes all numbers, spaces from start/end, special symbols from string and return plain text with spaces
         :param input_str: f.e ' "Інженерія програмного забезпечення ", 3 р.н.'
         :return: f.e 'Інженерія програмного забезпечення'
         """
