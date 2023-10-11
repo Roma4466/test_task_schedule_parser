@@ -18,7 +18,8 @@ class SingleMajorSchedule(Schedule):
         self._faculty_name = faculty_name
         self._year_of_studying = year_of_studying
         self._years = years
-        self._majors = majors
+        self._majors_names = majors
+        self._majors = []
 
     @property
     def faculty_name(self):
@@ -92,15 +93,17 @@ class SingleMajorSchedule(Schedule):
                 discipline_info.split(", ")) > 1 else "???"
             # now we know faculty, specialty, discipline
             # then let`s initialize field in result file
-            if discipline not in final_parsed_data[self._faculty_name][SPECIALITIES_FIELD_NAME][self._majors[0]]:
-                final_parsed_data[self._faculty_name][SPECIALITIES_FIELD_NAME][self._majors[0]][discipline] = {}
+            if discipline not in final_parsed_data[self._faculty_name][SPECIALITIES_FIELD_NAME][self._majors_names[0]]:
+                final_parsed_data[self._faculty_name][SPECIALITIES_FIELD_NAME][self._majors_names[0]][discipline] = {}
 
-            if group not in final_parsed_data[self._faculty_name][SPECIALITIES_FIELD_NAME][self._majors[0]][discipline]:
-                final_parsed_data[self._faculty_name][SPECIALITIES_FIELD_NAME][self._majors[0]][discipline][group] = {}
+            if group not in final_parsed_data[self._faculty_name][SPECIALITIES_FIELD_NAME][self._majors_names[0]][
+                discipline]:
+                final_parsed_data[self._faculty_name][SPECIALITIES_FIELD_NAME][self._majors_names[0]][discipline][
+                    group] = {}
 
             start_time_str, end_time_str = current_time.split('-')
 
-            final_parsed_data[self._faculty_name][SPECIALITIES_FIELD_NAME][self._majors[0]][discipline][group] = {
+            final_parsed_data[self._faculty_name][SPECIALITIES_FIELD_NAME][self._majors_names[0]][discipline][group] = {
                 "час початку": start_time_str,
                 "час кінця": end_time_str,
                 "тижні": week,
