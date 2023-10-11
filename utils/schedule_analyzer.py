@@ -12,15 +12,18 @@ from utils.models.single_major_schedule import SingleMajorSchedule
 
 class ScheduleParser:
     @staticmethod
-    def parse(schedule_data_frame: DataFrame, name: str):
+    def parse_schedule(schedule_data_frame: DataFrame, name: str):
+        """function that will parse schedule from .xlsx format into .json file"""
         schedule = ScheduleParser.fill_specialities(schedule_data_frame)
         final_parsed_data = schedule.parse()
         json_str = json.dumps(final_parsed_data, indent=4, default=datetime_serializer, ensure_ascii=False)
         # Define the directory path
         output_dir = 'output'
+
         # Check if the directory exists, and if not, create it
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
+
         with open(f'output/{name}.json', 'w') as f:
             f.write(json_str)
 
