@@ -2,155 +2,79 @@ import json
 import os
 from datetime import datetime
 
-import pandas as pd
 from pandas import DataFrame
 
-from utils.coordinates_getter import get_coordinates_of_column
-from utils.formatting import time_parcer
+from utils.constants import SPECIALITY_FIELD_NAME, FACULTY_FIELD_NAME
 from utils.formatting.str_formatting import StringFormatter
-from utils.formatting.time_parcer import TimeFormatter
-from utils.read_specialities import read_faculty_and_specialties
-from utils.speciality_extractor import extract_speciality_from_abbreviation
-
-SPECIALITIES_FIELD_NAME = "Спеціальності"
-LECTION_FIELD_NAME = "лекція"
+from utils.models.several_majors_schedule import SeveralMajorsSchedule
+from utils.models.single_major_schedule import SingleMajorSchedule
 
 
 class ScheduleParser:
     @staticmethod
-    def parse_schedule(schedule_data_frame: DataFrame, name: str):
-        """function that will parse schedule from .xlsx format into .json file"""
-        is_several_specialities = False
-
-        # getting column number
-        day_column = get_coordinates_of_column(schedule_data_frame, ["День"])[1]
-        time_column = get_coordinates_of_column(schedule_data_frame, ["Час"])[1]
-        disciple_column = get_coordinates_of_column(schedule_data_frame, ["Дисципліна, викладач"])[1]
-        group_column = get_coordinates_of_column(schedule_data_frame, ["Група"])[1]
-        week_column = get_coordinates_of_column(schedule_data_frame, ["Тижні", "Тиждень"])[1]
-        room_column = get_coordinates_of_column(schedule_data_frame, ["Аудиторія", "Ауд."])[1]
-
-        faculty, specialities, year_of_study, started_year = read_faculty_and_specialties(schedule_data_frame)
-        is_several_specialities = len(specialities) > 1
-
-        # Initialize the final data structure to hold the parsed information
-        final_parsed_data = {
-            faculty: {
-                SPECIALITIES_FIELD_NAME: {},
-                "Рік навчання": year_of_study,
-                "Роки навчального року": [started_year, started_year + 1],
-            }
-        }
-        for current_specialities in specialities:
-            final_parsed_data[faculty][SPECIALITIES_FIELD_NAME][current_specialities] = {}
-        # because of if there is time in 2 cels
-        # python reads it like it is only in one cell
-        # so I have save last time
-        current_time = ""
-        current_day = ""
-        previous_disciple = ""
-        group = ""
-        room = ""
-        week = ""
-        current_specialities = ""
-
-        # getting row number where schedule starts
-        coordinates = get_coordinates_of_column(schedule_data_frame, "День")[0]
-
-        for index, row in schedule_data_frame.iterrows():
-            # before coordinates row there is basic
-            # info about faculty etc.
-            # there is no schedule there so I skip it
-            if index < coordinates + 1:
-                continue
-
-            if pd.notna(row[day_column]):
-                current_day = row[day_column]
-            current_time = row[time_column] if pd.notna(row[time_column]) else current_time
-            discipline_info = row[disciple_column] if pd.notna(row[disciple_column]) else ""
-
-            group = str(row[group_column] if pd.notna(row[group_column]) else group)
-            if LECTION_FIELD_NAME.lower() in group.lower():
-                group = LECTION_FIELD_NAME
-            else:
-                for i in group:
-                    if i.isdigit():
-                        group = int(i)
-                        break
-            week = row[week_column] if pd.notna(row[week_column]) else week
-            week = TimeFormatter.format_datetime_for_json(week)
-            room = row[room_column] if pd.notna(row[room_column]) else room
-            # if this cell is empty then
-            # there is no need to read further
-            if not discipline_info:
-                continue
-
-            if is_several_specialities:
-                if len(discipline_info.split(")")) < 2:
-                    # sometimes it parses disciple info in 2 cells
-                    # in first disciple in second teacher name
-                    teacher = StringFormatter.remove_spaces_from_start_and_end(discipline_info)
-                    discipline = StringFormatter.remove_spaces_from_start_and_end(previous_disciple)
-                else:
-                    discipline = StringFormatter.remove_spaces_from_start_and_end(discipline_info.split("(")[0])
-                    previous_disciple = discipline
-                    teacher = StringFormatter.remove_spaces_from_start_and_end(discipline_info.split(")")[1])
-                    if not teacher.replace(" ", ""):
-                        continue
-                    current_specialities = extract_speciality_from_abbreviation(discipline_info, specialities)
-
-                for speciality in current_specialities:
-                    if discipline not in final_parsed_data[faculty][SPECIALITIES_FIELD_NAME][speciality]:
-                        final_parsed_data[faculty][SPECIALITIES_FIELD_NAME][speciality][discipline] = {}
-                    if group not in final_parsed_data[faculty][SPECIALITIES_FIELD_NAME][speciality][discipline]:
-                        final_parsed_data[faculty][SPECIALITIES_FIELD_NAME][speciality][discipline][group] = {}
-
-                start_time_str, end_time_str = current_time.split('-')
-                start_time_str = start_time_str.replace(".", ":")
-                end_time_str = end_time_str.replace(".", ":")
-
-                for speciality in current_specialities:
-                    final_parsed_data[faculty][SPECIALITIES_FIELD_NAME][speciality][discipline][group] = {
-                        "час початку": start_time_str,
-                        "час кінця": end_time_str,
-                        "тижні": week,
-                        "аудиторія": room,
-                        "день тижня": current_day,
-                        "викладач": teacher
-                    }
-            else:
-                discipline = StringFormatter.remove_spaces_from_start_and_end(discipline_info.split(", ")[0])
-                teacher = StringFormatter.remove_spaces_from_start_and_end(discipline_info.split(", ")[1]) if len(
-                    discipline_info.split(", ")) > 1 else "???"
-                # now we know faculty, specialty, discipline
-                # then let`s initialize field in result file
-                if discipline not in final_parsed_data[faculty][SPECIALITIES_FIELD_NAME][specialities[0]]:
-                    final_parsed_data[faculty][SPECIALITIES_FIELD_NAME][specialities[0]][discipline] = {}
-
-                if group not in final_parsed_data[faculty][SPECIALITIES_FIELD_NAME][specialities[0]][discipline]:
-                    final_parsed_data[faculty][SPECIALITIES_FIELD_NAME][specialities[0]][discipline][group] = {}
-
-                start_time_str, end_time_str = current_time.split('-')
-
-                final_parsed_data[faculty][SPECIALITIES_FIELD_NAME][specialities[0]][discipline][group] = {
-                    "час початку": start_time_str,
-                    "час кінця": end_time_str,
-                    "тижні": week,
-                    "аудиторія": room,
-                    "день тижня": current_day,
-                    "викладач": teacher
-                }
-
+    def parse(schedule_data_frame: DataFrame, name: str):
+        schedule = ScheduleParser.fill_specialities(schedule_data_frame)
+        final_parsed_data = schedule.parse()
         json_str = json.dumps(final_parsed_data, indent=4, default=datetime_serializer, ensure_ascii=False)
         # Define the directory path
         output_dir = 'output'
-
         # Check if the directory exists, and if not, create it
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
-
         with open(f'output/{name}.json', 'w') as f:
             f.write(json_str)
+
+    @staticmethod
+    def fill_specialities(schedule_data_frame: DataFrame):
+        """
+        creates either instance of SingleMajorSchedule or SeveralMajorsSchedule class
+        """
+        faculty = ""
+        majors = []
+        year_of_study = 0
+        started_year = 0
+        is_read_specialities = False
+        is_read_faculty = False
+        digits = ""
+
+        # Loop through each row in the DataFrame
+        for index, row in schedule_data_frame.iterrows():
+            for col_index in range(min(7, schedule_data_frame.shape[1])):
+                text = str(row.iloc[col_index])
+                current_string = ""
+                for symbol in text:
+                    if symbol.isdigit():
+                        digits += symbol
+                    else:
+                        if len(digits) == 4:
+                            started_year = int(digits)
+                        digits = ""
+
+                    if current_string == SPECIALITY_FIELD_NAME:
+                        current_string = ""
+                        is_read_specialities = True
+                    elif current_string == FACULTY_FIELD_NAME:
+                        is_read_faculty = True
+                    current_string += symbol
+
+                if is_read_faculty:
+                    faculty = current_string
+                    is_read_faculty = False
+                if is_read_specialities:
+                    for i in current_string:
+                        if i.isdigit():
+                            year_of_study = int(i)
+                    specialities_tmp = current_string.split("», ")
+                    for speciality in specialities_tmp:
+                        speciality = StringFormatter.remove_non_letters(speciality)
+                        majors.append(speciality)
+                    is_read_specialities = False
+
+        if len(majors) > 1:
+            return SeveralMajorsSchedule(faculty, year_of_study, [started_year, started_year + 1], majors,
+                                         schedule_data_frame)
+        return SingleMajorSchedule(faculty, year_of_study, [started_year, started_year + 1], majors,
+                                   schedule_data_frame)
 
 
 def datetime_serializer(obj):
