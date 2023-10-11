@@ -18,8 +18,7 @@ class SingleMajorSchedule(Schedule):
         self._faculty_name = faculty_name
         self._year_of_studying = year_of_studying
         self._years = years
-        self._majors_names = majors
-        self._majors = []
+        self._majors = majors
 
     @property
     def faculty_name(self):
@@ -35,7 +34,7 @@ class SingleMajorSchedule(Schedule):
 
     @property
     def majors(self):
-        return self.majors
+        return self._majors
 
     def parse(self):
         # Initialize the final data structure to hold the parsed information
@@ -46,7 +45,7 @@ class SingleMajorSchedule(Schedule):
                 "Роки навчального року": [self._years[0], self._years[1]],
             }
         }
-        for major in self.majors:
+        for major in self._majors:
             final_parsed_data[self._faculty_name][SPECIALITIES_FIELD_NAME][major] = {}
         # because of if there is time in 2 cels
         # python reads it like it is only in one cell,
@@ -95,17 +94,17 @@ class SingleMajorSchedule(Schedule):
                 discipline_info.split(", ")) > 1 else "???"
             # now we know faculty, specialty, discipline
             # then let`s initialize field in result file
-            if discipline not in final_parsed_data[self._faculty_name][SPECIALITIES_FIELD_NAME][self._majors_names[0]]:
-                final_parsed_data[self._faculty_name][SPECIALITIES_FIELD_NAME][self._majors_names[0]][discipline] = {}
+            if discipline not in final_parsed_data[self._faculty_name][SPECIALITIES_FIELD_NAME][self._majors[0]]:
+                final_parsed_data[self._faculty_name][SPECIALITIES_FIELD_NAME][self._majors[0]][discipline] = {}
 
-            if group not in final_parsed_data[self._faculty_name][SPECIALITIES_FIELD_NAME][self._majors_names[0]][
+            if group not in final_parsed_data[self._faculty_name][SPECIALITIES_FIELD_NAME][self._majors[0]][
                 discipline]:
-                final_parsed_data[self._faculty_name][SPECIALITIES_FIELD_NAME][self._majors_names[0]][discipline][
+                final_parsed_data[self._faculty_name][SPECIALITIES_FIELD_NAME][self._majors[0]][discipline][
                     group] = {}
 
             start_time_str, end_time_str = current_time.split('-')
 
-            final_parsed_data[self._faculty_name][SPECIALITIES_FIELD_NAME][self._majors_names[0]][discipline][group] = {
+            final_parsed_data[self._faculty_name][SPECIALITIES_FIELD_NAME][self._majors[0]][discipline][group] = {
                 "час початку": start_time_str,
                 "час кінця": end_time_str,
                 "тижні": week,
