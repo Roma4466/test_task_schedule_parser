@@ -20,6 +20,3 @@ class TestTimeFormatter(unittest.TestCase):
         self.assertEqual(TimeFormatter.format_datetime_for_json(datetime(current_year + 1, 1, 14)), "1-24")
         self.assertEqual(TimeFormatter.format_datetime_for_json("1-14"), "1-14")
         self.assertEqual(TimeFormatter.format_datetime_for_json(None), None)
-
-if __name__ == '__main__':
-    unittest.main()

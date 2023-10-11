@@ -27,7 +27,3 @@ class TestStringFormatter(unittest.TestCase):
                          'A')  # Single leading and trailing space
         self.assertEqual(StringFormatter.remove_spaces_from_start_and_end(' '), '')  # Single space
         self.assertEqual(StringFormatter.remove_spaces_from_start_and_end(''), '')  # Empty string
-
-
-if __name__ == '__main__':
-    unittest.main()
