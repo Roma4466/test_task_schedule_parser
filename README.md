@@ -18,7 +18,7 @@ git clone https://github.com/Roma4466/test_task_schedule_parser.git
 
 1. Run `pip install -r requirements.txt`
 2. Drag your file into `data` folder in root directory of this project (for example, fen.xlsx)
-3. Run `main.py`
+3. Run `python main.py`
 4. Write file name without extension, for example: fen
 
 ## Output
