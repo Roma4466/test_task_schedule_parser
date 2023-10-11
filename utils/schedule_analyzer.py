@@ -1,6 +1,5 @@
 import json
 import os
-from datetime import datetime
 
 from pandas import DataFrame
 
@@ -79,4 +78,3 @@ class ScheduleParser:
                                          schedule_data_frame)
         return SingleMajorSchedule(faculty, year_of_study, [started_year, started_year + 1], majors,
                                    schedule_data_frame)
-

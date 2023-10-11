@@ -52,11 +52,9 @@ class SingleMajorSchedule(Schedule):
         # so I have save last time
         current_time = ""
         current_day = ""
-        previous_disciple = ""
         group = ""
         room = ""
         week = ""
-        major = ""
 
         # getting row number where schedule starts
         coordinates = get_coordinates_of_column(self.schedule_data_frame, "День")[0]
