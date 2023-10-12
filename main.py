@@ -9,8 +9,7 @@ def main(file_name):
     try:
         file_path = f'data/{file_name}.xlsx'
         df = pd.read_excel(file_path, header=None)
-        parser = ScheduleParser()
-        parser.parse_schedule(df, file_name)
+        ScheduleParser.parse_schedule(df, file_name)
 
         print("Analysis finished, seek json result file in output folder")
         print("Note, that file may be in wrong encoding for your IDE")

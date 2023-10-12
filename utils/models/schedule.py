@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import List
 
 from pandas import DataFrame
 
@@ -6,7 +7,12 @@ from utils.coordinates_getter import get_coordinates_of_column
 
 
 class Schedule(ABC):
-    def __init__(self, schedule_data_frame: DataFrame):
+    def __init__(self, faculty_name: str, year_of_studying: int, years: List[int], majors: List[str],
+                 schedule_data_frame: DataFrame):
+        self._faculty_name = faculty_name
+        self._year_of_studying = year_of_studying
+        self._years = years
+        self._majors = majors
         # getting column number
         self.schedule_data_frame = schedule_data_frame
         self.day_column = get_coordinates_of_column(schedule_data_frame, ["День"])[1]
@@ -15,33 +21,6 @@ class Schedule(ABC):
         self.group_column = get_coordinates_of_column(schedule_data_frame, ["Група"])[1]
         self.week_column = get_coordinates_of_column(schedule_data_frame, ["Тижні", "Тиждень"])[1]
         self.room_column = get_coordinates_of_column(schedule_data_frame, ["Аудиторія", "Ауд."])[1]
-
-    @property
-    @abstractmethod
-    def faculty_name(self):
-        """
-        start year and end year of education period
-        """
-        pass
-
-    @property
-    @abstractmethod
-    def majors(self):
-        """list of names of majors"""
-        pass
-
-    @property
-    @abstractmethod
-    def year_of_studying(self):
-        pass
-
-    @property
-    @abstractmethod
-    def years(self):
-        """
-        start year and end year of education period
-        """
-        pass
 
     @abstractmethod
     def parse(self):
