@@ -4,7 +4,6 @@ from typing import List
 from pandas import DataFrame
 
 from utils.constants import FieldsNames
-from utils.formatting.str_formatting import StringFormatter
 from utils.models.schedule import Schedule
 
 
@@ -18,12 +17,12 @@ class SeveralMajorsSchedule(Schedule):
         if len(discipline_info.split(")")) < 2:
             # sometimes it parses disciple info in 2 cells
             # in first disciple in second teacher name
-            teacher = StringFormatter.remove_spaces_from_start_and_end(discipline_info)
-            discipline = StringFormatter.remove_spaces_from_start_and_end(self.previous_disciple)
+            teacher = discipline_info.strip()
+            discipline = self.previous_disciple.strip()
         else:
-            discipline = StringFormatter.remove_spaces_from_start_and_end(discipline_info.split("(")[0])
+            discipline = discipline_info.split("(")[0].strip()
             self.previous_disciple = discipline
-            teacher = StringFormatter.remove_spaces_from_start_and_end(discipline_info.split(")")[1])
+            teacher = discipline_info.split(")")[1].strip()
             if not teacher.replace(" ", ""):
                 return
             self.major = SeveralMajorsSchedule.extract_speciality_from_abbreviation(discipline_info, self._majors)

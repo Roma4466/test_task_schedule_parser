@@ -14,8 +14,8 @@ class SingleMajorSchedule(Schedule):
         super().__init__(faculty_name, year_of_studying, years, majors, schedule_data_frame)
 
     def parse_disciple_cell_text_into_map(self, discipline_info):
-        discipline = StringFormatter.remove_spaces_from_start_and_end(discipline_info.split(", ")[0])
-        teacher = StringFormatter.remove_spaces_from_start_and_end(discipline_info.split(", ")[1]) if len(
+        discipline = discipline_info.split(", ")[0].strip()
+        teacher = discipline_info.split(", ")[1].strip() if len(
             discipline_info.split(", ")) > 1 else "???"
         # now we know faculty, specialty, discipline
         # then let`s initialize field in result file
