@@ -3,7 +3,7 @@ from typing import List
 
 from pandas import DataFrame
 
-from utils.constants import SPECIALITIES_FIELD_NAME
+from utils.constants import FieldsNames
 from utils.formatting.str_formatting import StringFormatter
 from utils.models.schedule import Schedule
 
@@ -29,18 +29,18 @@ class SeveralMajorsSchedule(Schedule):
             self.major = SeveralMajorsSchedule.extract_speciality_from_abbreviation(discipline_info, self._majors)
 
         for speciality in self.major:
-            if discipline not in self.final_parsed_data[self._faculty_name][SPECIALITIES_FIELD_NAME][speciality]:
-                self.final_parsed_data[self._faculty_name][SPECIALITIES_FIELD_NAME][speciality][discipline] = {}
-            if self.group not in self.final_parsed_data[self._faculty_name][SPECIALITIES_FIELD_NAME][speciality][
+            if discipline not in self.final_parsed_data[self._faculty_name][FieldsNames.SPECIALITIES_FIELD_NAME][speciality]:
+                self.final_parsed_data[self._faculty_name][FieldsNames.SPECIALITIES_FIELD_NAME][speciality][discipline] = {}
+            if self.group not in self.final_parsed_data[self._faculty_name][FieldsNames.SPECIALITIES_FIELD_NAME][speciality][
                 discipline]:
-                self.final_parsed_data[self._faculty_name][SPECIALITIES_FIELD_NAME][speciality][discipline][
+                self.final_parsed_data[self._faculty_name][FieldsNames.SPECIALITIES_FIELD_NAME][speciality][discipline][
                     self.group] = {}
 
         start_time_str, end_time_str = self.current_time.split('-')
         start_time_str = start_time_str.replace(".", ":")
         end_time_str = end_time_str.replace(".", ":")
         for speciality in self.major:
-            self.final_parsed_data[self._faculty_name][SPECIALITIES_FIELD_NAME][speciality][discipline][self.group] = {
+            self.final_parsed_data[self._faculty_name][FieldsNames.SPECIALITIES_FIELD_NAME][speciality][discipline][self.group] = {
                 "час початку": start_time_str,
                 "час кінця": end_time_str,
                 "тижні": self.weeks_list,

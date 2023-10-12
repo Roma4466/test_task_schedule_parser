@@ -2,7 +2,7 @@ from typing import List
 
 from pandas import DataFrame
 
-from utils.constants import SPECIALITIES_FIELD_NAME
+from utils.constants import FieldsNames
 from utils.formatting.str_formatting import StringFormatter
 from utils.models.schedule import Schedule
 
@@ -19,17 +19,22 @@ class SingleMajorSchedule(Schedule):
             discipline_info.split(", ")) > 1 else "???"
         # now we know faculty, specialty, discipline
         # then let`s initialize field in result file
-        if discipline not in self.final_parsed_data[self._faculty_name][SPECIALITIES_FIELD_NAME][self._majors[0]]:
-            self.final_parsed_data[self._faculty_name][SPECIALITIES_FIELD_NAME][self._majors[0]][discipline] = {}
+        if discipline not in self.final_parsed_data[self._faculty_name][FieldsNames.SPECIALITIES_FIELD_NAME][
+            self._majors[0]]:
+            self.final_parsed_data[self._faculty_name][FieldsNames.SPECIALITIES_FIELD_NAME][self._majors[0]][
+                discipline] = {}
 
-        if self.group not in self.final_parsed_data[self._faculty_name][SPECIALITIES_FIELD_NAME][self._majors[0]][
-            discipline]:
-            self.final_parsed_data[self._faculty_name][SPECIALITIES_FIELD_NAME][self._majors[0]][discipline][
+        if self.group not in \
+                self.final_parsed_data[self._faculty_name][FieldsNames.SPECIALITIES_FIELD_NAME][self._majors[0]][
+                    discipline]:
+            self.final_parsed_data[self._faculty_name][FieldsNames.SPECIALITIES_FIELD_NAME][self._majors[0]][
+                discipline][
                 self.group] = {}
 
         start_time_str, end_time_str = self.current_time.split('-')
 
-        self.final_parsed_data[self._faculty_name][SPECIALITIES_FIELD_NAME][self._majors[0]][discipline][self.group] = {
+        self.final_parsed_data[self._faculty_name][FieldsNames.SPECIALITIES_FIELD_NAME][self._majors[0]][discipline][
+            self.group] = {
             "час початку": start_time_str,
             "час кінця": end_time_str,
             "тижні": self.weeks_list,

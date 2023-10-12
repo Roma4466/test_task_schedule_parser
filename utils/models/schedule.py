@@ -4,7 +4,7 @@ from typing import List
 import pandas as pd
 from pandas import DataFrame
 
-from utils.constants import SPECIALITIES_FIELD_NAME, LECTURE_FIELD_NAME
+from utils.constants import FieldsNames
 from utils.coordinates_getter import get_coordinates_of_column
 from utils.formatting.str_formatting import StringFormatter
 from utils.formatting.time_parcer import TimeFormatter
@@ -20,10 +20,10 @@ class Schedule(ABC):
         self._majors = majors
         # getting column number
         self.schedule_data_frame = schedule_data_frame
-        self.day_column = get_coordinates_of_column(schedule_data_frame, ["День"])[1]
-        self.time_column = get_coordinates_of_column(schedule_data_frame, ["Час"])[1]
-        self.disciple_column = get_coordinates_of_column(schedule_data_frame, ["Дисципліна, викладач"])[1]
-        self.group_column = get_coordinates_of_column(schedule_data_frame, ["Група"])[1]
+        self.day_column = get_coordinates_of_column(schedule_data_frame, FieldsNames.DAY_FIELD_NAMES)[1]
+        self.time_column = get_coordinates_of_column(schedule_data_frame, FieldsNames.TIME_FIELD_NAME)[1]
+        self.disciple_column = get_coordinates_of_column(schedule_data_frame, FieldsNames.DISCIPLE_INFO_FIELD_NAME)[1]
+        self.group_column = get_coordinates_of_column(schedule_data_frame, FieldsNames.GROUP_INFO_FIELD_NAME)[1]
         self.week_column = get_coordinates_of_column(schedule_data_frame, ["Тижні", "Тиждень"])[1]
         self.room_column = get_coordinates_of_column(schedule_data_frame, ["Аудиторія", "Ауд."])[1]
 
@@ -31,13 +31,13 @@ class Schedule(ABC):
         # Initialize the final data structure to hold the parsed information
         self.final_parsed_data = {
             self._faculty_name: {
-                SPECIALITIES_FIELD_NAME: {},
+                FieldsNames.SPECIALITIES_FIELD_NAME: {},
                 "Рік навчання": self._year_of_studying,
                 "Роки навчального року": [self._years[0], self._years[1]],
             }
         }
         for major in self._majors:
-            self.final_parsed_data[self._faculty_name][SPECIALITIES_FIELD_NAME][major] = {}
+            self.final_parsed_data[self._faculty_name][FieldsNames.SPECIALITIES_FIELD_NAME][major] = {}
         # because of if there is time in 2 cels
         # python reads it like it is only in one cell,
         # so I have save last time
@@ -69,8 +69,8 @@ class Schedule(ABC):
         discipline_info = row[self.disciple_column] if pd.notna(row[self.disciple_column]) else ""
 
         self.group = str(row[self.group_column] if pd.notna(row[self.group_column]) else self.group)
-        if LECTURE_FIELD_NAME.lower() in self.group.lower():
-            self.group = LECTURE_FIELD_NAME
+        if FieldsNames.LECTURE_FIELD_NAME.lower() in self.group.lower():
+            self.group = FieldsNames.LECTURE_FIELD_NAME
         else:
             self.group = StringFormatter.remove_everything_after_last_digit(self.group)
 

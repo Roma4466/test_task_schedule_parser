@@ -3,7 +3,7 @@ import os
 
 from pandas import DataFrame
 
-from utils.constants import SPECIALITY_FIELD_NAME, FACULTY_FIELD_NAME
+from utils.constants import FieldsNames
 from utils.datetime_serializer import datetime_serializer
 from utils.formatting.str_formatting import StringFormatter
 from utils.models.several_majors_schedule import SeveralMajorsSchedule
@@ -53,10 +53,10 @@ class ScheduleParser:
                             started_year = int(digits)
                         digits = ""
 
-                    if current_string == SPECIALITY_FIELD_NAME:
+                    if current_string == FieldsNames.SPECIALITY_FIELD_NAME:
                         current_string = ""
                         is_read_specialities = True
-                    elif current_string == FACULTY_FIELD_NAME:
+                    elif current_string == FieldsNames.FACULTY_FIELD_NAME:
                         is_read_faculty = True
                     current_string += symbol
 
