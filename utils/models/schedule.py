@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import List
 
 import pandas as pd
-from pandas import DataFrame
+from pandas import DataFrame, Series
 
 from utils.constants import FieldsNames
 from utils.coordinates_getter import get_coordinates_of_column
@@ -18,17 +18,15 @@ class Schedule(ABC):
         self._year_of_studying = year_of_studying
         self._years = years
         self._majors = majors
-        # getting column number
         self.schedule_data_frame = schedule_data_frame
-        self.day_column = get_coordinates_of_column(schedule_data_frame, FieldsNames.DAY_FIELD_NAMES)[1]
-        self.time_column = get_coordinates_of_column(schedule_data_frame, FieldsNames.TIME_FIELD_NAME)[1]
-        self.disciple_column = get_coordinates_of_column(schedule_data_frame, FieldsNames.DISCIPLE_INFO_FIELD_NAME)[1]
-        self.group_column = get_coordinates_of_column(schedule_data_frame, FieldsNames.GROUP_INFO_FIELD_NAME)[1]
+        self.day_column = get_coordinates_of_column(schedule_data_frame, [FieldsNames.DAY_FIELD_NAMES])[1]
+        self.time_column = get_coordinates_of_column(schedule_data_frame, [FieldsNames.TIME_FIELD_NAME])[1]
+        self.disciple_column = get_coordinates_of_column(schedule_data_frame, [FieldsNames.DISCIPLE_INFO_FIELD_NAME])[1]
+        self.group_column = get_coordinates_of_column(schedule_data_frame, [FieldsNames.GROUP_FIELD_NAME])[1]
         self.week_column = get_coordinates_of_column(schedule_data_frame, ["Тижні", "Тиждень"])[1]
         self.room_column = get_coordinates_of_column(schedule_data_frame, ["Аудиторія", "Ауд."])[1]
 
     def parse(self):
-        # Initialize the final data structure to hold the parsed information
         self.final_parsed_data = {
             self._faculty_name: {
                 FieldsNames.SPECIALITIES_FIELD_NAME: {},
@@ -38,9 +36,7 @@ class Schedule(ABC):
         }
         for major in self._majors:
             self.final_parsed_data[self._faculty_name][FieldsNames.SPECIALITIES_FIELD_NAME][major] = {}
-        # because of if there is time in 2 cels
-        # python reads it like it is only in one cell,
-        # so I have save last time
+
         self.current_time = ""
         self.current_day = ""
         self.previous_disciple = ""
@@ -49,24 +45,18 @@ class Schedule(ABC):
         self.weeks_list = ""
         self.major = ""
 
-        # getting row number where schedule starts
-        self.coordinates = get_coordinates_of_column(self.schedule_data_frame, "День")[0]
+        self.coordinates = get_coordinates_of_column(self.schedule_data_frame, [FieldsNames.DAY_FIELD_NAMES])[0]
 
-        for index, row in self.schedule_data_frame.iterrows():
-            self.parse_row(index, row)
+        # Use Pandas to filter rows where schedule starts and apply parse_row function
+        filtered_df = self.schedule_data_frame.loc[self.coordinates + 1:]
+        filtered_df.apply(self.parse_row, axis=1)
+
         return self.final_parsed_data
 
-    def parse_row(self, index, row):
-        # before coordinates row there is basic
-        # info about faculty etc.
-        # there is no schedule there, so I skip it
-        if index < self.coordinates + 1:
-            return
-
-        if pd.notna(row[self.day_column]):
-            self.current_day = row[self.day_column]
-        self.current_time = row[self.time_column] if pd.notna(row[self.time_column]) else self.current_time
-        discipline_info = row[self.disciple_column] if pd.notna(row[self.disciple_column]) else ""
+    def parse_row(self, row: Series):
+        self.current_day = row.at[self.day_column] if pd.notna(row.at[self.day_column]) else self.current_day
+        self.current_time = row.at[self.time_column] if pd.notna(row.at[self.time_column]) else self.current_time
+        discipline_info = row.at[self.disciple_column] if pd.notna(row.at[self.disciple_column]) else ""
 
         self.group = str(row[self.group_column] if pd.notna(row[self.group_column]) else self.group)
         if FieldsNames.LECTURE_FIELD_NAME.lower() in self.group.lower():
@@ -85,6 +75,16 @@ class Schedule(ABC):
         if not discipline_info:
             return
         self.parse_disciple_cell_text_into_map(discipline_info)
+
+    def fill_map_information(self, start_time_str: str, end_time_str: str, teacher: str):
+        return {
+            FieldsNames.TIME_START: start_time_str,
+            FieldsNames.TIME_END: end_time_str,
+            FieldsNames.WEEKS: self.weeks_list,
+            FieldsNames.ROOM: self.room,
+            FieldsNames.DAY_FIELD_NAMES: self.current_day,
+            FieldsNames.TEACHER: teacher
+        }
 
     @abstractmethod
     def parse_disciple_cell_text_into_map(self, discipline_info):

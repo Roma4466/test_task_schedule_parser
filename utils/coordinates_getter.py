@@ -1,6 +1,11 @@
-def get_coordinates_of_column(df, names):
-    for row in df.iterrows():
-        index, data = row
-        for col in range(len(data)):
-            if str(data[col]) in names:
-                return index, col
+from typing import List
+
+from pandas import DataFrame
+
+
+def get_coordinates_of_column(data_frame: DataFrame, names: List[str]):
+    mask = data_frame.isin(names)
+    coordinates = mask.stack()[lambda x: x].index.tolist()
+    if coordinates:
+        return coordinates[0]
+    return None
