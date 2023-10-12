@@ -13,8 +13,8 @@ class FieldsNames(StrEnum):
     GROUP_FIELD_NAME = "Група"
 
     # fields names in .json file
-    TIME_START = "час початку"
-    TIME_END = "час кінця"
-    WEEKS = "тижні"
+    TIME_START = "Час початку"
+    TIME_END = "Час кінця"
+    WEEKS = "Тижні"
     ROOM = "Аудиторія"
-    TEACHER = "викладач"
+    TEACHER = "Викладач"
