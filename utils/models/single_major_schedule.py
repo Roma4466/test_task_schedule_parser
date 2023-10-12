@@ -16,7 +16,7 @@ class SingleMajorSchedule(Schedule):
                  schedule_data_frame: DataFrame):
         super().__init__(faculty_name, year_of_studying, years, majors, schedule_data_frame)
 
-    def parse(self):
+    def parse_row(self):
         # Initialize the final data structure to hold the parsed information
         final_parsed_data = {
             self._faculty_name: {
