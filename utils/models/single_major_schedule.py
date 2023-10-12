@@ -3,7 +3,6 @@ from typing import List
 from pandas import DataFrame
 
 from utils.constants import FieldsNames
-from utils.formatting.str_formatting import StringFormatter
 from utils.models.schedule import Schedule
 
 
