@@ -31,8 +31,8 @@ class TestStringFormatter(unittest.TestCase):
     def test_remove_everything_after_last_digit(self):
         self.assertEqual(StringFormatter.remove_everything_after_last_digit('24f46hello'), '24f46')
         self.assertEqual(StringFormatter.remove_everything_after_last_digit('abc'), '')  # No digits
-        self.assertEqual(StringFormatter.remove_everything_after_last_digit('123abc456'), '123abc456')  # Last character is a digit
+        self.assertEqual(StringFormatter.remove_everything_after_last_digit('123abc456'),
+                         '123abc456')  # Last character is a digit
         self.assertEqual(StringFormatter.remove_everything_after_last_digit(''), '')  # Empty string
         self.assertEqual(StringFormatter.remove_everything_after_last_digit('123'), '123')  # Only digits
         self.assertEqual(StringFormatter.remove_everything_after_last_digit('abc123'), 'abc123')  # Ends with digits
-
