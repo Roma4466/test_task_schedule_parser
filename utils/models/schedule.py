@@ -4,7 +4,7 @@ from typing import List
 import pandas as pd
 from pandas import DataFrame
 
-from utils.constants import SPECIALITIES_FIELD_NAME, LECTION_FIELD_NAME
+from utils.constants import SPECIALITIES_FIELD_NAME, LECTURE_FIELD_NAME
 from utils.coordinates_getter import get_coordinates_of_column
 from utils.formatting.str_formatting import StringFormatter
 from utils.formatting.time_parcer import TimeFormatter
@@ -69,8 +69,8 @@ class Schedule(ABC):
         discipline_info = row[self.disciple_column] if pd.notna(row[self.disciple_column]) else ""
 
         self.group = str(row[self.group_column] if pd.notna(row[self.group_column]) else self.group)
-        if LECTION_FIELD_NAME.lower() in self.group.lower():
-            self.group = LECTION_FIELD_NAME
+        if LECTURE_FIELD_NAME.lower() in self.group.lower():
+            self.group = LECTURE_FIELD_NAME
         else:
             self.group = StringFormatter.remove_everything_after_last_digit(self.group)
 
