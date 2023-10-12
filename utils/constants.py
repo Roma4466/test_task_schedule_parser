@@ -9,6 +9,11 @@ class FieldsNames(StrEnum):
     DAY_FIELD_NAMES = "День"
     TIME_FIELD_NAME = "Час"
     DISCIPLE_INFO_FIELD_NAME = "Дисципліна, викладач"
-    GROUP_INFO_FIELD_NAME = "Група"
-    WEEKS_INFO_FIELD_NAME = "Тижні"
-    ROOM_INFO_FIELD_NAME = "Тижні"
+    GROUP_FIELD_NAME = "Група"
+
+    # fields names in .json file
+    TIME_START = "Час початку"
+    TIME_END = "Час кінця"
+    WEEKS = "Тижні"
+    ROOM = "Аудиторія"
+    TEACHER = "Викладач"

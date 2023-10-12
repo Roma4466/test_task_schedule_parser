@@ -20,10 +20,10 @@ class Schedule(ABC):
         self._majors = majors
         # getting column number
         self.schedule_data_frame = schedule_data_frame
-        self.day_column = get_coordinates_of_column(schedule_data_frame, FieldsNames.DAY_FIELD_NAMES)[1]
-        self.time_column = get_coordinates_of_column(schedule_data_frame, FieldsNames.TIME_FIELD_NAME)[1]
-        self.disciple_column = get_coordinates_of_column(schedule_data_frame, FieldsNames.DISCIPLE_INFO_FIELD_NAME)[1]
-        self.group_column = get_coordinates_of_column(schedule_data_frame, FieldsNames.GROUP_INFO_FIELD_NAME)[1]
+        self.day_column = get_coordinates_of_column(schedule_data_frame, [FieldsNames.DAY_FIELD_NAMES])[1]
+        self.time_column = get_coordinates_of_column(schedule_data_frame, [FieldsNames.TIME_FIELD_NAME])[1]
+        self.disciple_column = get_coordinates_of_column(schedule_data_frame, [FieldsNames.DISCIPLE_INFO_FIELD_NAME])[1]
+        self.group_column = get_coordinates_of_column(schedule_data_frame, [FieldsNames.GROUP_FIELD_NAME])[1]
         self.week_column = get_coordinates_of_column(schedule_data_frame, ["Тижні", "Тиждень"])[1]
         self.room_column = get_coordinates_of_column(schedule_data_frame, ["Аудиторія", "Ауд."])[1]
 
@@ -85,6 +85,16 @@ class Schedule(ABC):
         if not discipline_info:
             return
         self.parse_disciple_cell_text_into_map(discipline_info)
+
+    def fill_map_information(self, start_time_str: str, end_time_str: str, teacher: str):
+        return {
+            FieldsNames.TIME_START: start_time_str,
+            FieldsNames.TIME_END: end_time_str,
+            FieldsNames.WEEKS: self.weeks_list,
+            FieldsNames.ROOM: self.room,
+            FieldsNames.DAY_FIELD_NAMES: self.current_day,
+            FieldsNames.TEACHER: teacher
+        }
 
     @abstractmethod
     def parse_disciple_cell_text_into_map(self, discipline_info):

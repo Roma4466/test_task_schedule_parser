@@ -1,4 +1,5 @@
 import argparse
+import time
 
 import pandas as pd
 
@@ -15,6 +16,8 @@ def without_arguments():
 
 
 def start_analysis(name):
+    start_time = time.time()  # Store the start time
+
     try:
         file_path = f'data/{name}.xlsx'
         df = pd.read_excel(file_path, header=None)
@@ -25,6 +28,10 @@ def start_analysis(name):
         print("If you are using PyCharm, just click on \"Reload in 'windows-1251'\"")
     except FileNotFoundError:
         print("No such file in data folder. Please write correct name")
+
+    end_time = time.time()  # Store the end time
+    elapsed_time = end_time - start_time  # Calculate the elapsed time
+    print(f"The start_analysis method took {elapsed_time} seconds to complete.")
 
 
 if __name__ == '__main__':

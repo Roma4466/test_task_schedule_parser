@@ -40,14 +40,8 @@ class SeveralMajorsSchedule(Schedule):
         start_time_str = start_time_str.replace(".", ":")
         end_time_str = end_time_str.replace(".", ":")
         for speciality in self.major:
-            self.final_parsed_data[self._faculty_name][FieldsNames.SPECIALITIES_FIELD_NAME][speciality][discipline][self.group] = {
-                "час початку": start_time_str,
-                "час кінця": end_time_str,
-                "тижні": self.weeks_list,
-                "аудиторія": self.room,
-                "день тижня": self.current_day,
-                "викладач": teacher
-            }
+            self.final_parsed_data[self._faculty_name][FieldsNames.SPECIALITIES_FIELD_NAME][speciality][discipline][
+                self.group] = self.fill_map_information(start_time_str, end_time_str, teacher)
 
     @staticmethod
     def extract_speciality_from_abbreviation(str_input: str, majors: List[str]):

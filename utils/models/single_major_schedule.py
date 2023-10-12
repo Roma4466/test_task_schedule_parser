@@ -34,11 +34,4 @@ class SingleMajorSchedule(Schedule):
         start_time_str, end_time_str = self.current_time.split('-')
 
         self.final_parsed_data[self._faculty_name][FieldsNames.SPECIALITIES_FIELD_NAME][self._majors[0]][discipline][
-            self.group] = {
-            "час початку": start_time_str,
-            "час кінця": end_time_str,
-            "тижні": self.weeks_list,
-            "аудиторія": self.room,
-            "день тижня": self.current_day,
-            "викладач": teacher
-        }
+            self.group] = self.fill_map_information(start_time_str, end_time_str, teacher)
