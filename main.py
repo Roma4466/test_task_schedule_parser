@@ -6,10 +6,19 @@ from utils.schedule_analyzer import ScheduleParser
 
 
 def main(file_name):
+    start_analysis(file_name)
+
+
+def without_arguments():
+    name = str(input("Write file name without extension, for example: fen:\n"))
+    start_analysis(name)
+
+
+def start_analysis(name):
     try:
-        file_path = f'data/{file_name}.xlsx'
+        file_path = f'data/{name}.xlsx'
         df = pd.read_excel(file_path, header=None)
-        ScheduleParser.parse_schedule(df, file_name)
+        ScheduleParser.parse_schedule(df, name)
 
         print("Analysis finished, seek json result file in output folder")
         print("Note, that file may be in wrong encoding for your IDE")
@@ -20,7 +29,12 @@ def main(file_name):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Analyze schedule data.')
-    parser.add_argument('file_name', type=str, help='The name of the Excel file without extension')
+    parser.add_argument('file_name', type=str, nargs='?', help='The name of the Excel file without extension')
 
     args = parser.parse_args()
-    main(args.file_name)
+
+    if args.file_name:
+        main(args.file_name)
+    else:
+        print("Drag your file into data folder in root directory of this project")
+        without_arguments()
